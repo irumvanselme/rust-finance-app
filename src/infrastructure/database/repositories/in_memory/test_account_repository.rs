@@ -1,9 +1,10 @@
 #[cfg(test)]
 mod tests_account_repository {
-    use crate::domain::entities::account::{Account, AccountType};
-    use crate::domain::repositories::account_repository::AccountRepository;
-    use crate::domain::value_objects::currency::Currency;
+    use crate::app::entities::account::{Account, AccountType};
+    use crate::app::repositories::account_repository::AccountRepository;
+    use crate::app::value_objects::currency::Currency;
     use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::shared::test_utilities::get_random_account;
 
     #[test]
     fn test_empty_get_all() {
@@ -24,15 +25,9 @@ mod tests_account_repository {
         let mut account_repository = InMemoryAccountRepository::new();
 
         // WHEN an account is added in the repository
-        let account = Account::new(
-            "MTN Momo Account",
-            "Some cool description",
-            "Platform name",
-            AccountType::Savings,
-            Some(Currency::RWF),
-        );
+        let account = get_random_account();
 
-        account_repository.add(&account);
+        account_repository.add(account.clone());
 
         // AND the get_all method is called
         let accounts = account_repository.get_all();
@@ -52,18 +47,19 @@ mod tests_account_repository {
 
         // AND an account is added in the repository
         let account = Account::new(
-            "MTN Momo Account",
-            "Some cool description",
-            "Platform name",
+            None,
+            String::from("MTN Momo Account"),
+            String::from("Some cool description"),
+            String::from("Platform name"),
             AccountType::Savings,
             Some(Currency::RWF),
         );
-        let new_id = account_repository.add(&account);
+        let new_id = account_repository.add(account.clone());
 
         // WHEN the new id is queried
         let created_account = account_repository.get(new_id);
 
         // THEN the result is the same as the one input
-        assert_eq!(created_account, Some(account));
+        assert_eq!(created_account, Some(&account));
     }
 }
