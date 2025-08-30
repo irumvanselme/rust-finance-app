@@ -1,5 +1,6 @@
-use crate::domain::entities::account::Account;
-use crate::domain::repositories::account_repository::AccountRepository;
+use crate::app::entities::account::Account;
+use crate::app::entities::common::EntityId;
+use crate::app::repositories::account_repository::AccountRepository;
 
 pub struct InMemoryAccountRepository {
     next_id: usize,
@@ -15,19 +16,20 @@ impl InMemoryAccountRepository {
     }
 }
 
-impl AccountRepository<usize> for InMemoryAccountRepository {
-    fn get_all(&self) -> Vec<Account> {
-        self.accounts.clone()
+impl AccountRepository for InMemoryAccountRepository {
+    fn get_all(&self) -> &Vec<Account> {
+        &self.accounts
     }
 
-    fn add(&mut self, account: &Account) -> usize {
+    fn add(&mut self, account: Account) -> EntityId {
         let id = self.next_id;
-        self.accounts.push(account.clone());
+        self.accounts.push(account);
         self.next_id += 1;
-        id
+        EntityId(id.to_string())
     }
 
-    fn get(&self, id: usize) -> Option<Account> {
-        self.accounts.get(id).cloned()
+    fn get(&self, id: EntityId) -> Option<&Account> {
+        let id: usize = id.0.parse().unwrap();
+        self.accounts.get(id)
     }
 }
