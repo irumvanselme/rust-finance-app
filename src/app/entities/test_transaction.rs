@@ -3,6 +3,7 @@ mod test_transaction {
     use crate::app::entities::transaction::{
         AccountRef, Transaction, TransactionStatus, TransactionType,
     };
+    use crate::app::typing::amount::Amount;
     use crate::app::typing::currency::Currency;
     use chrono::{DateTime, Utc};
 
@@ -11,10 +12,10 @@ mod test_transaction {
         // GIVEN some transaction details,
         let mut given_account_ref = AccountRef::Id(String::from("1234567890").into());
         let mut given_transaction_type = TransactionType::Expense;
-        let mut given_amount = 100.0f32;
-        let mut given_fee = 10.0f32;
-        let mut given_opening_balance = 1000.0f32;
-        let mut given_closing_balance = 344.0f32;
+        let mut given_amount: Amount = 100.0f32.try_into().unwrap();
+        let mut given_fee: Amount = 10.0f32.try_into().unwrap();
+        let mut given_opening_balance: Option<Amount> = Some(1000.0f32.try_into().unwrap());
+        let mut given_closing_balance: Option<Amount> = Some(344.0f32.try_into().unwrap());
         let mut given_currency = Currency::RWF;
         let mut given_description = String::from("test");
         let mut given_reference_number = String::from("1234567890");
@@ -45,10 +46,10 @@ mod test_transaction {
         // AND the fields should be set accordingly.
         assert_eq!(*transaction.account(), given_account_ref);
         assert_eq!(*transaction.transaction_type(), given_transaction_type);
-        assert_eq!(transaction.amount(), given_amount);
-        assert_eq!(transaction.fee(), given_fee);
-        assert_eq!(transaction.opening_balance(), given_opening_balance);
-        assert_eq!(transaction.closing_balance(), given_closing_balance);
+        assert_eq!(*transaction.amount(), given_amount);
+        assert_eq!(*transaction.fee(), given_fee);
+        assert_eq!(*transaction.opening_balance(), given_opening_balance);
+        assert_eq!(*transaction.closing_balance(), given_closing_balance);
         assert_eq!(*transaction.currency(), given_currency);
         assert_eq!(*transaction.status(), given_status);
         assert_eq!(transaction.date(), given_date);
@@ -63,10 +64,10 @@ mod test_transaction {
         // WHEN the transaction details are updated in memory
         given_account_ref = AccountRef::Id(String::from("updated-1234567890").into());
         given_transaction_type = TransactionType::Income;
-        given_amount = 101.0f32;
-        given_fee = 11.0f32;
-        given_opening_balance = 1001.0f32;
-        given_closing_balance = 3450f32;
+        given_amount = 101.0f32.try_into().unwrap();
+        given_fee = 11.0f32.try_into().unwrap();
+        given_opening_balance = Some(1001.0f32.try_into().unwrap());
+        given_closing_balance = Some(3450f32.try_into().unwrap());
         given_currency = Currency::USD;
         given_description = String::from("test-1");
         given_reference_number = String::from("updated-1234567890");
@@ -79,10 +80,10 @@ mod test_transaction {
         // THEN The transaction object should not be udpated.
         assert_ne!(*transaction.account(), given_account_ref);
         assert_ne!(*transaction.transaction_type(), given_transaction_type);
-        assert_ne!(transaction.amount(), given_amount);
-        assert_ne!(transaction.fee(), given_fee);
-        assert_ne!(transaction.opening_balance(), given_opening_balance);
-        assert_ne!(transaction.closing_balance(), given_closing_balance);
+        assert_ne!(*transaction.amount(), given_amount);
+        assert_ne!(*transaction.fee(), given_fee);
+        assert_ne!(*transaction.opening_balance(), given_opening_balance);
+        assert_ne!(*transaction.closing_balance(), given_closing_balance);
         assert_ne!(*transaction.currency(), given_currency);
         assert_ne!(*transaction.status(), given_status);
         assert_ne!(transaction.date(), given_date);
@@ -113,10 +114,10 @@ mod test_transaction {
         // THEN the transaction object should be updated successfully.
         assert_eq!(*transaction.account(), given_account_ref);
         assert_eq!(*transaction.transaction_type(), given_transaction_type);
-        assert_eq!(transaction.amount(), given_amount);
-        assert_eq!(transaction.fee(), given_fee);
-        assert_eq!(transaction.opening_balance(), given_opening_balance);
-        assert_eq!(transaction.closing_balance(), given_closing_balance);
+        assert_eq!(*transaction.amount(), given_amount);
+        assert_eq!(*transaction.fee(), given_fee);
+        assert_eq!(*transaction.opening_balance(), given_opening_balance);
+        assert_eq!(*transaction.closing_balance(), given_closing_balance);
         assert_eq!(*transaction.currency(), given_currency);
         assert_eq!(*transaction.status(), given_status);
         assert_eq!(transaction.date(), given_date);

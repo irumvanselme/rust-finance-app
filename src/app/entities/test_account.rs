@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod test_account_entity {
     use crate::app::entities::account::{Account, AccountType};
+    use crate::app::typing::amount::Amount;
     use crate::app::typing::currency::Currency;
 
     #[test]
@@ -37,7 +38,7 @@ mod test_account_entity {
         assert_eq!(*account.description(), given_account_description);
 
         // AND the balance should start from zero.
-        assert_eq!(account.balance(), 0.0);
+        assert_eq!(*account.balance(), 0.0.try_into().unwrap());
     }
 
     #[test]
@@ -53,11 +54,11 @@ mod test_account_entity {
         );
 
         // WHEN the balance is updated
-        let new_balance = 100.0;
-        account.set_balance(new_balance);
+        let new_balance: Amount = 100.0.try_into().unwrap();
+        account.set_balance(new_balance.clone());
 
         // THEN the balance should be the same as the input
-        assert_eq!(account.balance(), new_balance);
+        assert_eq!(*account.balance(), new_balance);
 
         // WHEN Account name is updated
         let new_name = String::from("New account name");
@@ -108,30 +109,33 @@ mod test_account_entity {
         );
 
         // WHEN the balance is updated
-        let new_balance = 100.0;
+        let new_balance: Amount = 100.0.try_into().unwrap();
         account.set_balance(new_balance);
 
         // WHEN the balance is updated
-        let new_balance = 100.0;
-        account.set_balance(new_balance);
+        let new_balance: Amount = 100.0.try_into().unwrap();
+        account.set_balance(new_balance.clone());
 
         // AND it is reflected as the new balance
-        assert_eq!(account.balance(), new_balance);
+        assert_eq!(*account.balance(), new_balance);
 
         // WHEN some amount is withdrawn
-        let withdrawn_amount = 10.0;
-        account.withdraw(withdrawn_amount);
-
-        // THEN the balance should be updated
-        assert_eq!(account.balance(), new_balance - withdrawn_amount);
-
-        // WHEN some amount is deposited
-        let deposited_amount = 10.0;
-        account.deposit(deposited_amount);
+        let withdrawn_amount: Amount = 10.0.try_into().unwrap();
+        account.withdraw(&withdrawn_amount);
 
         // THEN the balance should be updated
         assert_eq!(
-            account.balance(),
+            *account.balance(),
+            new_balance.clone() - withdrawn_amount.clone()
+        );
+
+        // WHEN some amount is deposited
+        let deposited_amount: Amount = 10.0.try_into().unwrap();
+        account.deposit(&deposited_amount);
+
+        // THEN the balance should be updated
+        assert_eq!(
+            *account.balance(),
             new_balance - withdrawn_amount + deposited_amount
         );
     }

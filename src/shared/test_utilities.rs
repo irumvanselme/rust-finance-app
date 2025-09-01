@@ -2,12 +2,13 @@ use crate::app::entities::account::{Account, AccountType};
 use crate::app::entities::transaction::{
     AccountRef, Transaction, TransactionStatus, TransactionType,
 };
+use crate::app::typing::amount::{Amount, AmountError};
 use crate::app::typing::currency::Currency;
 use chrono::{DateTime, Utc};
 use rand::{distr::Alphanumeric, Rng};
 
 #[allow(dead_code)]
-fn get_random_string(len: usize) -> String {
+pub fn get_random_string(len: usize) -> String {
     rand::rng()
         .sample_iter(&Alphanumeric)
         .take(len)
@@ -16,18 +17,18 @@ fn get_random_string(len: usize) -> String {
 }
 
 #[allow(dead_code)]
-fn get_random_float() -> f32 {
-    rand::rng().random_range(0.0..1000.0)
+fn get_random_amount() -> Amount {
+    rand::rng().random_range(0.0..1000.0).try_into().unwrap()
 }
 
 #[allow(dead_code)]
 pub fn get_random_transaction() -> Transaction {
     let mut given_account_ref = AccountRef::Id(get_random_string(10).into());
     let mut given_transaction_type = TransactionType::Expense;
-    let mut given_amount = get_random_float();
-    let mut given_fee = get_random_float();
-    let mut given_opening_balance = get_random_float();
-    let mut given_closing_balance = get_random_float();
+    let mut given_amount = get_random_amount();
+    let mut given_fee = get_random_amount();
+    let mut given_opening_balance = get_random_amount();
+    let mut given_closing_balance = get_random_amount();
     let mut given_currency = Currency::RWF;
     let mut given_description = get_random_string(1000);
     let mut given_reference_number = get_random_string(20);
@@ -41,10 +42,10 @@ pub fn get_random_transaction() -> Transaction {
         None,
         given_account_ref.clone(),
         given_transaction_type.clone(),
-        given_amount.clone(),
-        given_fee.clone(),
-        given_opening_balance.clone(),
-        given_closing_balance.clone(),
+        given_amount.clone().into(),
+        given_fee.clone().into(),
+        Some(given_opening_balance.clone().into()),
+        Some(given_closing_balance.clone().into()),
         given_currency.clone(),
         given_status.clone(),
         given_date.clone(),
@@ -67,7 +68,7 @@ pub fn get_random_account() -> Account {
 }
 
 pub fn assert_accounts_equal(left: &Account, right: &Account, include_id: bool) {
-    if (include_id) {
+    if include_id {
         assert_eq!(left.id(), right.id());
     }
 

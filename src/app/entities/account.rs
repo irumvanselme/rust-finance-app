@@ -1,4 +1,5 @@
 use crate::app::entities::common::EntityId;
+use crate::app::typing::amount::{Amount, MIN_AMOUNT};
 use crate::app::typing::currency::{Currency, DEFAULT_CURRENCY};
 
 #[derive(Debug, PartialEq, Clone, Eq)]
@@ -31,7 +32,7 @@ pub struct Account {
     /**
      * The account balance.
      */
-    balance: f32,
+    balance: Amount,
 
     /**
      * The account type.
@@ -61,7 +62,7 @@ impl Account {
             platform,
             account_type,
             currency: currency.unwrap_or(DEFAULT_CURRENCY),
-            balance: 0.0,
+            balance: MIN_AMOUNT,
         }
     }
 
@@ -77,8 +78,8 @@ impl Account {
         &self.description
     }
 
-    pub fn balance(&self) -> f32 {
-        self.balance
+    pub fn balance(&self) -> &Amount {
+        &self.balance
     }
 
     pub fn platform(&self) -> &str {
@@ -105,7 +106,7 @@ impl Account {
         self.description = description;
     }
 
-    pub fn set_balance(&mut self, balance: f32) {
+    pub fn set_balance(&mut self, balance: Amount) {
         self.balance = balance;
     }
 
@@ -121,11 +122,11 @@ impl Account {
         self.currency = currency
     }
 
-    pub fn deposit(&mut self, amount: f32) {
-        self.balance += amount;
+    pub fn deposit(&mut self, amount: &Amount) {
+        self.balance = self.balance() + amount
     }
 
-    pub fn withdraw(&mut self, amount: f32) {
-        self.balance -= amount;
+    pub fn withdraw(&mut self, amount: &Amount) {
+        self.balance = self.balance() - amount
     }
 }
