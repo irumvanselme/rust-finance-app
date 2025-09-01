@@ -2,7 +2,7 @@ use crate::app::entities::account::{Account, AccountType};
 use crate::app::entities::transaction::{
     AccountRef, Transaction, TransactionStatus, TransactionType,
 };
-use crate::app::typing::amount::{Amount, AmountError};
+use crate::app::typing::amount::{Amount};
 use crate::app::typing::currency::Currency;
 use chrono::{DateTime, Utc};
 use rand::{distr::Alphanumeric, Rng};
@@ -23,20 +23,20 @@ fn get_random_amount() -> Amount {
 
 #[allow(dead_code)]
 pub fn get_random_transaction() -> Transaction {
-    let mut given_account_ref = AccountRef::Id(get_random_string(10).into());
-    let mut given_transaction_type = TransactionType::Expense;
-    let mut given_amount = get_random_amount();
-    let mut given_fee = get_random_amount();
-    let mut given_opening_balance = get_random_amount();
-    let mut given_closing_balance = get_random_amount();
-    let mut given_currency = Currency::RWF;
-    let mut given_description = get_random_string(1000);
-    let mut given_reference_number = get_random_string(20);
-    let mut given_transaction_message = get_random_string(200);
-    let mut given_date = DateTime::parse_from_rfc3339("2023-10-01T12:00:00Z")
+    let given_account_ref = AccountRef::Id(get_random_string(10).into());
+    let given_transaction_type = TransactionType::Expense;
+    let given_amount = get_random_amount();
+    let given_fee = get_random_amount();
+    let given_opening_balance = get_random_amount();
+    let given_closing_balance = get_random_amount();
+    let given_currency = Currency::RWF;
+    let given_description = get_random_string(1000);
+    let given_reference_number = get_random_string(20);
+    let given_transaction_message = get_random_string(200);
+    let given_date = DateTime::parse_from_rfc3339("2023-10-01T12:00:00Z")
         .unwrap()
         .with_timezone(&Utc);
-    let mut given_status = TransactionStatus::Confirmed;
+    let given_status = TransactionStatus::Confirmed;
 
     Transaction::new(
         None,
@@ -67,6 +67,7 @@ pub fn get_random_account() -> Account {
     )
 }
 
+#[allow(dead_code)]
 pub fn assert_accounts_equal(left: &Account, right: &Account, include_id: bool) {
     if include_id {
         assert_eq!(left.id(), right.id());
