@@ -4,8 +4,9 @@ mod interfaces;
 mod shared;
 
 use crate::app::entities::account::{Account, AccountType};
-use crate::app::entities::common::EntityRef;
-use crate::app::entities::transaction::{Transaction, TransactionStatus, TransactionType};
+use crate::app::entities::transaction::{
+    AccountRef, Transaction, TransactionStatus, TransactionType,
+};
 use crate::app::repositories::account_repository::AccountRepository;
 use crate::app::value_objects::currency::Currency;
 use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
@@ -26,7 +27,7 @@ fn main() {
 
     let transaction = Transaction::new(
         None,
-        EntityRef::Id(account_id),
+        AccountRef::Id(account_id),
         TransactionType::Income,
         10f32,
         1f32,

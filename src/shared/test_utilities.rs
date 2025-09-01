@@ -1,6 +1,7 @@
 use crate::app::entities::account::{Account, AccountType};
-use crate::app::entities::common::EntityRef;
-use crate::app::entities::transaction::{Transaction, TransactionStatus, TransactionType};
+use crate::app::entities::transaction::{
+    AccountRef, Transaction, TransactionStatus, TransactionType,
+};
 use crate::app::value_objects::currency::Currency;
 use chrono::{DateTime, Utc};
 use rand::{distr::Alphanumeric, Rng};
@@ -21,7 +22,7 @@ fn get_random_float() -> f32 {
 
 #[allow(dead_code)]
 pub fn get_random_transaction() -> Transaction {
-    let mut given_account_ref = EntityRef::Id(get_random_string(10).into());
+    let mut given_account_ref = AccountRef::Id(get_random_string(10).into());
     let mut given_transaction_type = TransactionType::Expense;
     let mut given_amount = get_random_float();
     let mut given_fee = get_random_float();
@@ -63,4 +64,17 @@ pub fn get_random_account() -> Account {
         AccountType::Savings,
         Some(Currency::RWF),
     )
+}
+
+pub fn assert_accounts_equal(left: &Account, right: &Account, include_id: bool) {
+    if (include_id) {
+        assert_eq!(left.id(), right.id());
+    }
+
+    assert_eq!(left.name(), right.name());
+    assert_eq!(left.description(), right.description());
+    assert_eq!(left.platform(), right.platform());
+    assert_eq!(left.balance(), right.balance());
+    assert_eq!(left.account_type(), right.account_type());
+    assert_eq!(left.currency(), right.currency());
 }

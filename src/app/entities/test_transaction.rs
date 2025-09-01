@@ -1,14 +1,15 @@
 #[cfg(test)]
 mod test_transaction {
-    use crate::app::entities::common::EntityRef;
-    use crate::app::entities::transaction::{Transaction, TransactionStatus, TransactionType};
+    use crate::app::entities::transaction::{
+        AccountRef, Transaction, TransactionStatus, TransactionType,
+    };
     use crate::app::value_objects::currency::Currency;
     use chrono::{DateTime, Utc};
 
     #[test]
     fn test_entity() {
         // GIVEN some transaction details,
-        let mut given_account_ref = EntityRef::Id(String::from("1234567890").into());
+        let mut given_account_ref = AccountRef::Id(String::from("1234567890").into());
         let mut given_transaction_type = TransactionType::Expense;
         let mut given_amount = 100.0f32;
         let mut given_fee = 10.0f32;
@@ -60,7 +61,7 @@ mod test_transaction {
         assert_eq!(*transaction.status(), given_status);
 
         // WHEN the transaction details are updated in memory
-        given_account_ref = EntityRef::Id(String::from("updated-1234567890").into());
+        given_account_ref = AccountRef::Id(String::from("updated-1234567890").into());
         given_transaction_type = TransactionType::Income;
         given_amount = 101.0f32;
         given_fee = 11.0f32;

@@ -17,13 +17,15 @@ pub enum TransactionStatus {
     RolledBack,
 }
 
+pub type AccountRef = EntityRef<Account>;
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Transaction {
     // Unique identifier for the transaction.
     id: Option<EntityId>,
 
     /// Reference to the account
-    account: EntityRef<Account>,
+    account: AccountRef,
 
     /// Type of the transaction (using transaction_ because type is a reserved word)
     transaction_type: TransactionType,
@@ -61,7 +63,7 @@ pub struct Transaction {
 impl Transaction {
     pub fn new(
         id: Option<EntityId>,
-        account: EntityRef<Account>,
+        account: AccountRef,
         transaction_type: TransactionType,
         amount: f32,
         fee: f32,
@@ -95,7 +97,7 @@ impl Transaction {
         &self.id
     }
 
-    pub fn account(&self) -> &EntityRef<Account> {
+    pub fn account(&self) -> &AccountRef {
         &self.account
     }
 
@@ -147,7 +149,7 @@ impl Transaction {
         self.id = id;
     }
 
-    pub fn set_account(&mut self, account: EntityRef<Account>) {
+    pub fn set_account(&mut self, account: AccountRef) {
         self.account = account;
     }
 
