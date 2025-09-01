@@ -1,6 +1,6 @@
 use crate::app::entities::account::Account;
 use crate::app::entities::common::{EntityId, EntityRef};
-use crate::app::value_objects::currency::Currency;
+use crate::app::typing::currency::Currency;
 use chrono::{DateTime, Utc};
 
 #[derive(Debug, Clone, PartialEq)]

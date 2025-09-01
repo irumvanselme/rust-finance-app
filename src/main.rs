@@ -8,7 +8,7 @@ use crate::app::entities::transaction::{
     AccountRef, Transaction, TransactionStatus, TransactionType,
 };
 use crate::app::repositories::account_repository::AccountRepository;
-use crate::app::value_objects::currency::Currency;
+use crate::app::typing::currency::Currency;
 use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
 
 fn main() {
