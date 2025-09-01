@@ -1,6 +1,6 @@
 use crate::app::entities::account::Account;
 use crate::app::entities::common::EntityId;
-use crate::app::repositories::account_repository::AccountRepository;
+use crate::app::repositories::account_repository::{AccountRepository, FindByIdAndUpdateError};
 
 pub struct InMemoryAccountRepository {
     next_id: usize,
@@ -17,19 +17,41 @@ impl InMemoryAccountRepository {
 }
 
 impl AccountRepository for InMemoryAccountRepository {
-    fn get_all(&self) -> &Vec<Account> {
+    fn find_all(&self) -> &Vec<Account> {
+        // GET all accounts in the memory
         &self.accounts
     }
 
+    fn find_by_id(&self, id: EntityId) -> Option<&Account> {
+        // GET an account by an id in the memory
+        let id: usize = id.0.parse().unwrap();
+        self.accounts.get(id)
+    }
+
     fn add(&mut self, account: Account) -> EntityId {
+        // Add an account to the memory
         let id = self.next_id;
         self.accounts.push(account);
         self.next_id += 1;
         EntityId(id.to_string())
     }
 
-    fn get(&self, id: EntityId) -> Option<&Account> {
-        let id: usize = id.0.parse().unwrap();
-        self.accounts.get(id)
+    fn find_by_id_and_update(
+        &mut self,
+        id: EntityId,
+        account: Account,
+    ) -> Result<EntityId, FindByIdAndUpdateError> {
+        // Find an account by id and update it in the memory
+        match self.find_by_id(id.clone()) {
+            Some(account) => account,
+            None => return Err(FindByIdAndUpdateError::NotFound),
+        };
+
+        let index: usize = id.0.parse().unwrap();
+
+        // Update the self.accounts[index
+        self.accounts[index] = account;
+
+        Ok(id)
     }
 }

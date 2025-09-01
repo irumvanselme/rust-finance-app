@@ -1,5 +1,6 @@
 use crate::app::entities::account::Account;
 use crate::app::entities::common::{EntityId, EntityRef};
+use crate::app::typing::amount::Amount;
 use crate::app::typing::currency::Currency;
 use chrono::{DateTime, Utc};
 
@@ -31,16 +32,16 @@ pub struct Transaction {
     transaction_type: TransactionType,
 
     /// Amount of the transaction
-    amount: f32,
+    amount: Amount,
 
     /// Transaction fee
-    fee: f32,
+    fee: Amount,
 
     /// Opening balance.
-    opening_balance: f32,
+    opening_balance: Option<Amount>,
 
     /// Closing balance.
-    closing_balance: f32,
+    closing_balance: Option<Amount>,
 
     /// Currency of the transaction.
     currency: Currency,
@@ -65,10 +66,10 @@ impl Transaction {
         id: Option<EntityId>,
         account: AccountRef,
         transaction_type: TransactionType,
-        amount: f32,
-        fee: f32,
-        opening_balance: f32,
-        closing_balance: f32,
+        amount: Amount,
+        fee: Amount,
+        opening_balance: Option<Amount>,
+        closing_balance: Option<Amount>,
         currency: Currency,
         status: TransactionStatus,
         date: DateTime<Utc>,
@@ -105,20 +106,20 @@ impl Transaction {
         &self.transaction_type
     }
 
-    pub fn amount(&self) -> f32 {
-        self.amount
+    pub fn amount(&self) -> &Amount {
+        &self.amount
     }
 
-    pub fn fee(&self) -> f32 {
-        self.fee
+    pub fn fee(&self) -> &Amount {
+        &self.fee
     }
 
-    pub fn opening_balance(&self) -> f32 {
-        self.opening_balance
+    pub fn opening_balance(&self) -> &Option<Amount> {
+        &self.opening_balance
     }
 
-    pub fn closing_balance(&self) -> f32 {
-        self.closing_balance
+    pub fn closing_balance(&self) -> &Option<Amount> {
+        &self.closing_balance
     }
 
     pub fn currency(&self) -> &Currency {
@@ -157,19 +158,19 @@ impl Transaction {
         self.transaction_type = transaction_type;
     }
 
-    pub fn set_amount(&mut self, amount: f32) {
+    pub fn set_amount(&mut self, amount: Amount) {
         self.amount = amount
     }
 
-    pub fn set_fee(&mut self, fee: f32) {
+    pub fn set_fee(&mut self, fee: Amount) {
         self.fee = fee;
     }
 
-    pub fn set_opening_balance(&mut self, opening_balance: f32) {
+    pub fn set_opening_balance(&mut self, opening_balance: Option<Amount>) {
         self.opening_balance = opening_balance;
     }
 
-    pub fn set_closing_balance(&mut self, closing_balance: f32) {
+    pub fn set_closing_balance(&mut self, closing_balance: Option<Amount>) {
         self.closing_balance = closing_balance;
     }
 
