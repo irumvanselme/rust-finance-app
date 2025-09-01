@@ -9,7 +9,7 @@ use crate::app::entities::transaction::{
 };
 use crate::app::repositories::account_repository::AccountRepository;
 use crate::app::typing::currency::Currency;
-use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
 
 fn main() {
     // Let us create an account

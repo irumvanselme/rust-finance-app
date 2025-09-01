@@ -2,7 +2,7 @@ use crate::app::entities::account::{Account, AccountType};
 use crate::app::entities::transaction::{
     AccountRef, Transaction, TransactionStatus, TransactionType,
 };
-use crate::app::typing::amount::{Amount};
+use crate::app::typing::amount::Amount;
 use crate::app::typing::currency::Currency;
 use chrono::{DateTime, Utc};
 use rand::{distr::Alphanumeric, Rng};

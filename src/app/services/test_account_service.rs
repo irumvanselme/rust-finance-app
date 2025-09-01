@@ -2,7 +2,7 @@
 mod test_account_service_get_all {
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::AccountService;
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::{assert_accounts_equal, get_random_account};
 
     #[test]
@@ -43,7 +43,7 @@ mod test_account_service_find_by_id {
     use crate::app::entities::common::EntityId;
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::AccountService;
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::{assert_accounts_equal, get_random_account};
 
     #[test]
@@ -82,7 +82,7 @@ mod test_account_service_find_by_id {
 mod test_account_service_save {
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::{AccountService, CreateError};
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::{assert_accounts_equal, get_random_account};
 
     #[test]
@@ -130,7 +130,7 @@ mod test_account_service_find_by_id_or_fail {
     use crate::app::entities::common::EntityId;
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::{AccountService, FindByIdOrFailError};
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::{assert_accounts_equal, get_random_account};
 
     #[test]
@@ -175,7 +175,7 @@ mod test_account_service_withdraw {
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::{AccountService, UpdateError};
     use crate::app::typing::amount::Amount;
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::get_random_account;
 
     #[test]
@@ -275,7 +275,7 @@ mod test_account_service_deposit {
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::{AccountService, UpdateError};
     use crate::app::typing::amount::Amount;
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::get_random_account;
 
     #[test]

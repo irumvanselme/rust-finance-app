@@ -4,7 +4,7 @@ mod tests_account_repository {
     use crate::app::entities::common::EntityId;
     use crate::app::repositories::account_repository::{AccountRepository, FindByIdAndUpdateError};
     use crate::app::typing::currency::Currency;
-    use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::{
         assert_accounts_equal, get_random_account, get_random_string,
     };
