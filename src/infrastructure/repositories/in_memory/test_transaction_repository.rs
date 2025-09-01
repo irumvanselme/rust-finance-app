@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test_transaction_repository {
     use crate::app::repositories::transaction_repository::TransactionRepository;
-    use crate::infrastructure::database::repositories::in_memory::transaction_repository::InMemoryTransactionRepository;
+    use crate::infrastructure::repositories::in_memory::transaction_repository::InMemoryTransactionRepository;
     use crate::shared::test_utilities::get_random_transaction;
 
     #[test]
