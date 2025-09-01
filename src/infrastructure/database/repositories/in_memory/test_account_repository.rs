@@ -2,7 +2,7 @@
 mod tests_account_repository {
     use crate::app::entities::account::{Account, AccountType};
     use crate::app::repositories::account_repository::AccountRepository;
-    use crate::app::value_objects::currency::Currency;
+    use crate::app::typing::currency::Currency;
     use crate::infrastructure::database::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::get_random_account;
 

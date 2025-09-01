@@ -1,5 +1,5 @@
 use crate::app::entities::common::EntityId;
-use crate::app::value_objects::currency::{Currency, DEFAULT_CURRENCY};
+use crate::app::typing::currency::{Currency, DEFAULT_CURRENCY};
 
 #[derive(Debug, PartialEq, Clone, Eq)]
 pub enum AccountType {

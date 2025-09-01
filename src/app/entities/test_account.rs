@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod test_account_entity {
     use crate::app::entities::account::{Account, AccountType};
-    use crate::app::value_objects::currency::Currency;
+    use crate::app::typing::currency::Currency;
 
     #[test]
     fn test_new_account() {

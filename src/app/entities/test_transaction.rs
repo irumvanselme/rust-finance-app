@@ -3,7 +3,7 @@ mod test_transaction {
     use crate::app::entities::transaction::{
         AccountRef, Transaction, TransactionStatus, TransactionType,
     };
-    use crate::app::value_objects::currency::Currency;
+    use crate::app::typing::currency::Currency;
     use chrono::{DateTime, Utc};
 
     #[test]
