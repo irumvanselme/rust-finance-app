@@ -1,0 +1,3 @@
+struct TransactionService;
+
+impl TransactionService {}

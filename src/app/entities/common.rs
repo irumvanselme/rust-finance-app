@@ -9,6 +9,12 @@ impl From<String> for EntityId {
     }
 }
 
+impl From<&str> for EntityId {
+    fn from(value: &str) -> Self {
+        Self(value.to_string())
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum EntityRef<EntityT> {
     Id(EntityId),
