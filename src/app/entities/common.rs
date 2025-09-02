@@ -1,0 +1,28 @@
+use std::fmt::Debug;
+
+#[derive(Debug, Default, PartialEq, Clone, Eq)]
+pub struct EntityId(pub(crate) String);
+
+impl From<String> for EntityId {
+    fn from(value: String) -> Self {
+        Self(value)
+    }
+}
+
+impl From<&str> for EntityId {
+    fn from(value: &str) -> Self {
+        Self(value.to_string())
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum EntityRef<EntityT> {
+    Id(EntityId),
+    Value(EntityT),
+}
+
+impl<EntityT> From<EntityId> for EntityRef<EntityT> {
+    fn from(value: EntityId) -> Self {
+        Self::Id(value)
+    }
+}

@@ -1,1 +1,1 @@
-mod database;
+pub(crate) mod repositories;
