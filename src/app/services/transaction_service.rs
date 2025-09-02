@@ -49,7 +49,7 @@ impl<'a> TransactionService<'a> {
     /// # Returns
     /// * `&Vec<Transaction>` -- A reference to a vector containing all `Transaction` instances.
     pub fn find_all(&self) -> &Vec<Transaction> {
-        self.repository.get_all()
+        self.repository.find_all()
     }
 
     pub fn create(&mut self, transaction: Transaction) -> Result<EntityId, CreateError> {
@@ -126,16 +126,16 @@ impl<'a> TransactionService<'a> {
             savable_transaction.set_account(Value(new_account));
         }
 
-        Ok(self.repository.add(savable_transaction))
+        Ok(self.repository.create(savable_transaction))
     }
 
     pub fn find_by_id(&self, id: EntityId) -> Option<&Transaction> {
-        self.repository.get(id)
+        self.repository.find_by_id(id)
     }
 
     /// Finds a transaction by its ID or returns an error if not found
     pub fn find_by_id_or_fail(&self, id: EntityId) -> Result<&Transaction, GetOneError> {
-        match self.repository.get(id.clone()) {
+        match self.repository.find_by_id(id.clone()) {
             Some(transaction) => Ok(transaction),
             None => Err(GetOneError::NotFound(id)),
         }

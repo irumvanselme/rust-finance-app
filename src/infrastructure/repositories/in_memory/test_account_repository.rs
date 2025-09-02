@@ -10,12 +10,12 @@ mod tests_account_repository {
     };
 
     #[test]
-    fn test_empty_get_all() {
+    fn test_empty_find_all() {
         // GIVEN the in memory account repository is initialized.
         // AND no items are added in the repository.
         let account_repository = InMemoryAccountRepository::new();
 
-        // WHEN the get_all method is called
+        // WHEN the find_all method is called
         let accounts = account_repository.find_all();
 
         // THEN the result is empty
@@ -32,7 +32,7 @@ mod tests_account_repository {
 
         account_repository.add(account.clone());
 
-        // AND the get_all method is called
+        // AND the find_all method is called
         let accounts = account_repository.find_all();
 
         // THEN the result is not empty

@@ -80,3 +80,22 @@ pub fn assert_accounts_equal(left: &Account, right: &Account, include_id: bool) 
     assert_eq!(left.account_type(), right.account_type());
     assert_eq!(left.currency(), right.currency());
 }
+
+#[allow(dead_code)]
+pub fn assert_transactions_equal(left: &Transaction, right: &Transaction, include_id: bool) {
+    if include_id {
+        assert_eq!(left.id(), right.id());
+    }
+
+    assert_eq!(left.account(), right.account());
+    assert_eq!(left.transaction_type(), right.transaction_type());
+    assert_eq!(left.amount(), right.amount());
+    assert_eq!(left.fee(), right.fee());
+    assert_eq!(left.opening_balance(), right.opening_balance());
+    assert_eq!(left.closing_balance(), right.closing_balance());
+    assert_eq!(left.currency(), right.currency());
+    assert_eq!(left.status(), right.status());
+    assert_eq!(left.date(), right.date());
+    assert_eq!(left.description(), right.description());
+    assert_eq!(left.reference_number(), right.reference_number());
+}

@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-#[derive(Debug, PartialEq, Clone, Eq)]
+#[derive(Debug, Default, PartialEq, Clone, Eq)]
 pub struct EntityId(pub(crate) String);
 
 impl From<String> for EntityId {

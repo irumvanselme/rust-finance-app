@@ -39,7 +39,7 @@ impl<'a> AccountService<'a> {
     /// Improve by making this API function return a stream or introduce a new method.
     /// # Returns
     /// * `&Vec<Account>` — A reference to the vector containing all `Account` objects.
-    pub fn get_all(&self) -> &Vec<Account> {
+    pub fn find_all(&self) -> &Vec<Account> {
         self.repository.find_all()
     }
 
