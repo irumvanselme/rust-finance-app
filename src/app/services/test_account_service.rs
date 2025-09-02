@@ -24,8 +24,8 @@ mod test_account_service_find_all {
         let mut account_repository = InMemoryAccountRepository::new();
         // AND two items are added.
         let given_accounts = (get_random_account(), get_random_account());
-        account_repository.add(given_accounts.0.clone());
-        account_repository.add(given_accounts.1.clone());
+        account_repository.create(given_accounts.0.clone());
+        account_repository.create(given_accounts.1.clone());
 
         // WHEN getting all accounts
         let account_service = AccountService::new(&mut account_repository);
@@ -53,7 +53,7 @@ mod test_account_service_find_by_id {
 
         // AND some account is in the repository
         let given_account = get_random_account();
-        let account_id = account_repository.add(given_account.clone());
+        let account_id = account_repository.create(given_account.clone());
 
         // WHEN finding by id
         let account_service = AccountService::new(&mut account_repository);
@@ -140,7 +140,7 @@ mod test_account_service_find_by_id_or_fail {
 
         // AND some account is in the repository
         let given_account = get_random_account();
-        let account_id = account_repository.add(given_account.clone());
+        let account_id = account_repository.create(given_account.clone());
 
         // WHEN finding by an id or fail
         let account_service = AccountService::new(&mut account_repository);
@@ -191,7 +191,7 @@ mod test_account_service_withdraw {
 
         // AND the account is saved in the repository with the given balance.
         account.set_balance(given_balance.clone());
-        let account_id = account_repository.add(account.clone());
+        let account_id = account_repository.create(account.clone());
 
         // AND the amount to withdraw.
         let amount_to_withdraw: Amount = 50f32.try_into().unwrap();
@@ -249,7 +249,7 @@ mod test_account_service_withdraw {
 
         // AND the account is saved in the repository with the given balance.
         account.set_balance(given_balance.clone());
-        let account_id = account_repository.add(account.clone());
+        let account_id = account_repository.create(account.clone());
 
         // AND the amount to withdraw.
         let amount_to_withdraw: Amount = 50f32.try_into().unwrap();
@@ -291,7 +291,7 @@ mod test_account_service_deposit {
 
         // AND the account is saved in the repository with the given balance.
         account.set_balance(given_balance.clone());
-        let account_id = account_repository.add(account.clone());
+        let account_id = account_repository.create(account.clone());
 
         // AND the amount to deposit.
         let amount_to_deposit: Amount = 50f32.try_into().unwrap();

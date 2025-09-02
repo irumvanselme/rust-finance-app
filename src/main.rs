@@ -23,7 +23,7 @@ fn main() {
     );
 
     let mut in_memory_account_repository = InMemoryAccountRepository::new();
-    let account_id = in_memory_account_repository.add(account.clone());
+    let account_id = in_memory_account_repository.create(account.clone());
 
     let transaction = Transaction::new(
         None,

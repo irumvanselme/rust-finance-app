@@ -53,7 +53,7 @@ impl<'a> AccountService<'a> {
         }
 
         // Return the generated ID.
-        Ok(self.repository.add(account))
+        Ok(self.repository.create(account))
     }
 
     fn find_account_to_update(&mut self, account_id: &EntityId) -> Result<Account, UpdateError> {
