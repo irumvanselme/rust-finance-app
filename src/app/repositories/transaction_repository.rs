@@ -5,15 +5,15 @@ pub trait TransactionRepository {
     /**
     Get all transaction
     */
-    fn get_all(&self) -> &Vec<Transaction>;
+    fn find_all(&self) -> &Vec<Transaction>;
 
     /**
     Add a new transaction
     */
-    fn add(&mut self, transaction: Transaction) -> EntityId;
+    fn create(&mut self, transaction: Transaction) -> EntityId;
 
     /**
     Get a transaction by id
     */
-    fn get(&self, id: EntityId) -> Option<&Transaction>;
+    fn find_by_id(&self, id: EntityId) -> Option<&Transaction>;
 }

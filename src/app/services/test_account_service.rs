@@ -1,25 +1,25 @@
 #[cfg(test)]
-mod test_account_service_get_all {
+mod test_account_service_find_all {
     use crate::app::repositories::account_repository::AccountRepository;
     use crate::app::services::account_service::AccountService;
     use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
     use crate::shared::test_utilities::{assert_accounts_equal, get_random_account};
 
     #[test]
-    fn test_get_all_accounts_empty_list() {
+    fn test_find_all_accounts_empty_list() {
         // GIVEN an in-memory account repository
         let mut account_repository = InMemoryAccountRepository::new();
 
         // WHEN getting all accounts
         let account_service = AccountService::new(&mut account_repository);
-        let accounts = account_service.get_all();
+        let accounts = account_service.find_all();
 
         // THEN the account list is empty
         assert_eq!(accounts.len(), 0);
     }
 
     #[test]
-    fn test_get_all_accounts_non_empty_list() {
+    fn test_find_all_accounts_non_empty_list() {
         // GIVEN an in-memory account repository
         let mut account_repository = InMemoryAccountRepository::new();
         // AND two items are added.
@@ -29,7 +29,7 @@ mod test_account_service_get_all {
 
         // WHEN getting all accounts
         let account_service = AccountService::new(&mut account_repository);
-        let accounts = account_service.get_all();
+        let accounts = account_service.find_all();
 
         // THEN the accounts should be the same as the given accounts.
         assert_eq!(accounts.len(), 2);

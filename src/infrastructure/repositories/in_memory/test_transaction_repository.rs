@@ -5,13 +5,13 @@ mod test_transaction_repository {
     use crate::shared::test_utilities::get_random_transaction;
 
     #[test]
-    fn test_empty_get_all() {
+    fn test_empty_find_all() {
         // GIVEN the in memory transaction repository is initialized.
         // AND no items are added in the repository.
         let in_memory_transaction_repository = InMemoryTransactionRepository::new();
 
-        // WHEN the get_all method is called
-        let transactions = in_memory_transaction_repository.get_all();
+        // WHEN the find_all method is called
+        let transactions = in_memory_transaction_repository.find_all();
 
         // THEN the result is empty
         assert_eq!(transactions.len(), 0);
@@ -25,10 +25,10 @@ mod test_transaction_repository {
         // WHEN an transaction is added in the repository
         let mut transaction = get_random_transaction();
 
-        let transaction_id = transactions_repository.add(transaction.clone());
+        let transaction_id = transactions_repository.create(transaction.clone());
 
-        // AND the get_all method is called
-        let transactions = transactions_repository.get_all();
+        // AND the find_all method is called
+        let transactions = transactions_repository.find_all();
 
         // THEN the result is not empty
         assert_eq!(transactions.len(), 1);
@@ -46,11 +46,11 @@ mod test_transaction_repository {
 
         // AND an account is added in the repository
         let mut transaction = get_random_transaction();
-        let new_id = transactions_repository.add(transaction.clone());
+        let new_id = transactions_repository.create(transaction.clone());
         transaction.set_id(Some(new_id.clone()));
 
         // WHEN the new id is queried
-        let created_account = transactions_repository.get(new_id);
+        let created_account = transactions_repository.find_by_id(new_id);
 
         // THEN the result is the same as the one input
         assert_eq!(created_account, Some(&transaction));

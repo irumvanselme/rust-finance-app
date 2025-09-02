@@ -17,11 +17,11 @@ impl InMemoryTransactionRepository {
 }
 
 impl TransactionRepository for InMemoryTransactionRepository {
-    fn get_all(&self) -> &Vec<Transaction> {
+    fn find_all(&self) -> &Vec<Transaction> {
         &self.transactions
     }
 
-    fn add(&mut self, mut transaction: Transaction) -> EntityId {
+    fn create(&mut self, mut transaction: Transaction) -> EntityId {
         let id = EntityId(self.next_id.to_string());
         transaction.set_id(Some(id.clone()));
         self.transactions.push(transaction);
@@ -31,7 +31,7 @@ impl TransactionRepository for InMemoryTransactionRepository {
         id
     }
 
-    fn get(&self, id: EntityId) -> Option<&Transaction> {
+    fn find_by_id(&self, id: EntityId) -> Option<&Transaction> {
         let id: usize = id.0.parse().unwrap();
         self.transactions.get(id)
     }
