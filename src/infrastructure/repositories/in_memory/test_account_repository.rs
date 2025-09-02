@@ -30,7 +30,7 @@ mod tests_account_repository {
         // WHEN an account is added in the repository
         let account = get_random_account();
 
-        account_repository.add(account.clone());
+        account_repository.create(account.clone());
 
         // AND the find_all method is called
         let accounts = account_repository.find_all();
@@ -57,7 +57,7 @@ mod tests_account_repository {
             AccountType::Savings,
             Some(Currency::RWF),
         );
-        let new_id = account_repository.add(account.clone());
+        let new_id = account_repository.create(account.clone());
 
         // WHEN the new id is queried
         let created_account = account_repository.find_by_id(new_id);
@@ -72,7 +72,7 @@ mod tests_account_repository {
         // AND an account is added in the repository.
         let mut account_repository = InMemoryAccountRepository::new();
         let mut account = get_random_account();
-        let new_id = account_repository.add(account.clone());
+        let new_id = account_repository.create(account.clone());
 
         // WHEN the account name is queried.
         let db_account = account_repository.find_by_id(new_id.clone()).unwrap();

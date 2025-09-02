@@ -17,7 +17,7 @@ pub trait AccountRepository {
     /**
     Add a new account
     */
-    fn add(&mut self, account: Account) -> EntityId;
+    fn create(&mut self, account: Account) -> EntityId;
 
     /// Find an account by ID and update it.
     /// It will throw a FindByIdAndUpdateError::NotFound if the provided id doesn't have any corresponding document in the db.

@@ -28,7 +28,7 @@ impl AccountRepository for InMemoryAccountRepository {
         self.accounts.get(id)
     }
 
-    fn add(&mut self, account: Account) -> EntityId {
+    fn create(&mut self, account: Account) -> EntityId {
         // Add an account to the memory
         let id = self.next_id;
         self.accounts.push(account);
