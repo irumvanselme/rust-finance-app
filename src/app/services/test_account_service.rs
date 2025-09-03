@@ -8,11 +8,11 @@ mod test_account_service_find_all {
     #[test]
     fn test_find_all_accounts_empty_list() {
         // GIVEN an in-memory account repository
-        let mut account_repository = InMemoryAccountRepository::new();
+        let account_repository = InMemoryAccountRepository::new();
 
         // WHEN getting all accounts
-        let account_service = AccountService::new(&mut account_repository);
-        let accounts = account_service.find_all();
+        let account_service = AccountService;
+        let accounts = account_service.find_all(&account_repository);
 
         // THEN the account list is empty
         assert_eq!(accounts.len(), 0);
@@ -28,8 +28,8 @@ mod test_account_service_find_all {
         account_repository.create(given_accounts.1.clone());
 
         // WHEN getting all accounts
-        let account_service = AccountService::new(&mut account_repository);
-        let accounts = account_service.find_all();
+        let account_service = AccountService;
+        let accounts = account_service.find_all(&account_repository);
 
         // THEN the accounts should be the same as the given accounts.
         assert_eq!(accounts.len(), 2);
@@ -56,8 +56,8 @@ mod test_account_service_find_by_id {
         let account_id = account_repository.create(given_account.clone());
 
         // WHEN finding by id
-        let account_service = AccountService::new(&mut account_repository);
-        let account = account_service.find_by_id(account_id);
+        let account_service = AccountService;
+        let account = account_service.find_by_id(&account_repository, account_id);
 
         // THEN the account should be the same as the given account.
         assert_accounts_equal(&given_account, account.unwrap(), false);
@@ -66,12 +66,12 @@ mod test_account_service_find_by_id {
     #[test]
     fn test_find_by_id_returns_none() {
         // GIVEN an in-memory account repository
-        let mut account_repository = InMemoryAccountRepository::new();
+        let account_repository = InMemoryAccountRepository::new();
 
         // WHEN finding by an id that does not exist
         let given_account_id: EntityId = "1".into();
-        let account_service = AccountService::new(&mut account_repository);
-        let account = account_service.find_by_id(given_account_id);
+        let account_service = AccountService;
+        let account = account_service.find_by_id(&account_repository, given_account_id);
 
         // THEN the account should be none.
         assert!(account.is_none());
@@ -92,8 +92,8 @@ mod test_account_service_save {
 
         // WHEN saving a new account
         let given_account = get_random_account();
-        let mut account_service = AccountService::new(&mut account_repository);
-        let account_id = account_service.create(given_account.clone());
+        let account_service = AccountService;
+        let account_id = account_service.create(&mut account_repository, given_account.clone());
 
         // THEN the request should be in the repository.
         assert_accounts_equal(
@@ -111,8 +111,9 @@ mod test_account_service_save {
         // WHEN saving a new account with an id provided
         let mut given_account = get_random_account();
         given_account.set_id(Some("1".into()));
-        let mut account_service = AccountService::new(&mut account_repository);
-        let create_response = account_service.create(given_account.clone());
+        let account_service = AccountService;
+        let create_response =
+            account_service.create(&mut account_repository, given_account.clone());
 
         // THEN the request should be in the repository.
         assert!(create_response.is_err());
@@ -143,8 +144,8 @@ mod test_account_service_find_by_id_or_fail {
         let account_id = account_repository.create(given_account.clone());
 
         // WHEN finding by an id or fail
-        let account_service = AccountService::new(&mut account_repository);
-        let account = account_service.find_by_id_or_fail(&account_id);
+        let account_service = AccountService;
+        let account = account_service.find_by_id_or_fail(&account_repository, &account_id);
 
         // THEN the account should be the same as the given account.
         assert_accounts_equal(&given_account, account.unwrap(), false);
@@ -153,12 +154,12 @@ mod test_account_service_find_by_id_or_fail {
     #[test]
     fn test_find_by_id_returns_an_error() {
         // GIVEN an in-memory account repository
-        let mut account_repository = InMemoryAccountRepository::new();
+        let account_repository = InMemoryAccountRepository::new();
 
         // WHEN finding by an id that does not exist
         let given_account_id: EntityId = "1".into();
-        let account_service = AccountService::new(&mut account_repository);
-        let account = account_service.find_by_id_or_fail(&given_account_id);
+        let account_service = AccountService;
+        let account = account_service.find_by_id_or_fail(&account_repository, &given_account_id);
 
         // THEN the account should return a NotFound Error.
         assert!(account.is_err());
@@ -197,8 +198,9 @@ mod test_account_service_withdraw {
         let amount_to_withdraw: Amount = 50f32.try_into().unwrap();
 
         // WHEN the amount is withdrawn using the service
-        let mut account_service = AccountService::new(&mut account_repository);
-        let withdraw_response = account_service.withdraw(&account_id, &amount_to_withdraw);
+        let mut account_service = AccountService;
+        let withdraw_response =
+            account_service.withdraw(&mut account_repository, &account_id, &amount_to_withdraw);
 
         // THEN the withdrawal request should be successful.
         assert!(withdraw_response.is_ok());
@@ -220,11 +222,14 @@ mod test_account_service_withdraw {
         let mut account_repository = InMemoryAccountRepository::new();
 
         // WHEN the amount is withdrawn using the service
-        let mut account_service = AccountService::new(&mut account_repository);
+        let mut account_service = AccountService;
         let given_amount_to_withdraw: Amount = 50f32.try_into().unwrap();
         let given_account_id: EntityId = "1".into();
-        let withdraw_response =
-            account_service.withdraw(&given_account_id, &given_amount_to_withdraw);
+        let withdraw_response = account_service.withdraw(
+            &mut account_repository,
+            &given_account_id,
+            &given_amount_to_withdraw,
+        );
 
         // THEN the withdrawal request should be successful.
         assert!(withdraw_response.is_err());
@@ -255,8 +260,9 @@ mod test_account_service_withdraw {
         let amount_to_withdraw: Amount = 50f32.try_into().unwrap();
 
         // WHEN the amount is withdrawn using the service
-        let mut account_service = AccountService::new(&mut account_repository);
-        let withdraw_response = account_service.withdraw(&account_id, &amount_to_withdraw);
+        let mut account_service = AccountService;
+        let withdraw_response =
+            account_service.withdraw(&mut account_repository, &account_id, &amount_to_withdraw);
 
         // THEN the withdrawal request should fail
         assert!(withdraw_response.is_err());
@@ -297,8 +303,9 @@ mod test_account_service_deposit {
         let amount_to_deposit: Amount = 50f32.try_into().unwrap();
 
         // WHEN the amount is deposited using the service
-        let mut account_service = AccountService::new(&mut account_repository);
-        let deposit_response = account_service.deposit(&account_id, &amount_to_deposit);
+        let mut account_service = AccountService;
+        let deposit_response =
+            account_service.deposit(&mut account_repository, &account_id, &amount_to_deposit);
 
         // THEN the deposit request should be successful.
         assert!(deposit_response.is_ok());
@@ -306,7 +313,7 @@ mod test_account_service_deposit {
         // AND the new account should be (given_balance + amount_to_deposit)
         let actual_account = deposit_response.unwrap();
         let actual_new_balance = actual_account.balance();
-        let expected_new_balance = (given_balance.clone() + amount_to_deposit.clone());
+        let expected_new_balance = given_balance.clone() + amount_to_deposit.clone();
         assert_eq!(actual_new_balance, &expected_new_balance);
 
         // AND it should be reflected in the item in the repository
@@ -326,10 +333,14 @@ mod test_account_service_deposit {
         let amount_to_deposit: Amount = 50f32.try_into().unwrap();
 
         // WHEN the amount is deposited using the service
-        let mut account_service = AccountService::new(&mut account_repository);
-        let deposit_response = account_service.deposit(&given_account_id, &amount_to_deposit);
+        let mut account_service = AccountService;
+        let deposit_response = account_service.deposit(
+            &mut account_repository,
+            &given_account_id,
+            &amount_to_deposit,
+        );
 
-        // THEN the deposit request should be fail.
+        // THEN the deposit request should fail.
         assert!(deposit_response.is_err());
 
         // AND the error should be EntityIdNotFound
