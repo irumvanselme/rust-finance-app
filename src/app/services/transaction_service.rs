@@ -1,6 +1,7 @@
 use crate::app::entities::common::EntityId;
 use crate::app::entities::common::EntityRef::{Id, Value};
 use crate::app::entities::transaction::{Transaction, TransactionType};
+use crate::app::repositories::account_repository::AccountRepository;
 use crate::app::repositories::transaction_repository::TransactionRepository;
 use crate::app::services::account_service::AccountService;
 use thiserror::Error;
@@ -26,33 +27,26 @@ pub enum CreateError {
     InvalidAccountRef { account_id: Option<EntityId> },
 }
 
-pub struct TransactionService<'a> {
-    repository: &'a mut dyn TransactionRepository,
-    account_service: &'a mut AccountService<'a>,
-}
+pub struct TransactionService;
 
-impl<'a> TransactionService<'a> {
-    pub fn new(
-        repository: &'a mut dyn TransactionRepository,
-        account_service: &'a mut AccountService<'a>,
-    ) -> TransactionService<'a> {
-        Self {
-            repository,
-            account_service,
-        }
-    }
-
+impl TransactionService {
     /// Retrieves all transactions stored in the repository.
     ///
     /// This method fetches all `Transaction` records managed by the repository
     ///
     /// # Returns
     /// * `&Vec<Transaction>` -- A reference to a vector containing all `Transaction` instances.
-    pub fn find_all(&self) -> &Vec<Transaction> {
-        self.repository.find_all()
+    pub fn find_all<'a>(&self, repository: &'a dyn TransactionRepository) -> &'a Vec<Transaction> {
+        repository.find_all()
     }
 
-    pub fn create(&mut self, transaction: Transaction) -> Result<EntityId, CreateError> {
+    pub fn create(
+        &mut self,
+        repository: &mut dyn TransactionRepository,
+        account_repository: &mut dyn AccountRepository,
+        account_service: &mut AccountService,
+        transaction: Transaction,
+    ) -> Result<EntityId, CreateError> {
         // 1. Validate that optional fields are not provided
 
         // 1.1 See if the provided id already exists and throw an error
@@ -82,7 +76,7 @@ impl<'a> TransactionService<'a> {
         };
 
         // 3. Verify that the account we have can be verified by the account service, otherwise it is an account that does not exist.
-        let account = match self.account_service.find_by_id_or_fail(&account_id) {
+        let account = match account_service.find_by_id_or_fail(account_repository, &account_id) {
             Ok(account) => account.clone(),
             Err(_) => {
                 return Err(CreateError::InvalidAccountRef {
@@ -101,12 +95,12 @@ impl<'a> TransactionService<'a> {
 
             // Update the respective account with the new transaction
             let update_account_result = match transaction.transaction_type() {
-                TransactionType::Expense => self
-                    .account_service
-                    .withdraw(&account_id, transaction.amount()),
-                TransactionType::Income => self
-                    .account_service
-                    .deposit(&account_id, transaction.amount()),
+                TransactionType::Expense => {
+                    account_service.withdraw(account_repository, &account_id, transaction.amount())
+                }
+                TransactionType::Income => {
+                    account_service.deposit(account_repository, &account_id, transaction.amount())
+                }
             };
 
             // Handle the result of the update
@@ -126,16 +120,24 @@ impl<'a> TransactionService<'a> {
             savable_transaction.set_account(Value(new_account));
         }
 
-        Ok(self.repository.create(savable_transaction))
+        Ok(repository.create(savable_transaction))
     }
 
-    pub fn find_by_id(&self, id: EntityId) -> Option<&Transaction> {
-        self.repository.find_by_id(id)
+    pub fn find_by_id<'a>(
+        &self,
+        repository: &'a dyn TransactionRepository,
+        id: EntityId,
+    ) -> Option<&'a Transaction> {
+        repository.find_by_id(id)
     }
 
     /// Finds a transaction by its ID or returns an error if not found
-    pub fn find_by_id_or_fail(&self, id: EntityId) -> Result<&Transaction, GetOneError> {
-        match self.repository.find_by_id(id.clone()) {
+    pub fn find_by_id_or_fail<'a>(
+        &self,
+        repository: &'a dyn TransactionRepository,
+        id: EntityId,
+    ) -> Result<&'a Transaction, GetOneError> {
+        match repository.find_by_id(id.clone()) {
             Some(transaction) => Ok(transaction),
             None => Err(GetOneError::NotFound(id)),
         }
