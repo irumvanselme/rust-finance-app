@@ -57,13 +57,13 @@ mod tests_account_repository {
             AccountType::Savings,
             Some(Currency::RWF),
         );
-        let new_id = account_repository.create(account.clone());
+        let new_id = account_repository.create(account.clone()).unwrap();
 
         // WHEN the new id is queried
         let created_account = account_repository.find_by_id(new_id);
 
         // THEN the result is the same as the one input
-        assert_eq!(created_account, Some(&account));
+        assert_eq!(&created_account.unwrap(), &account);
     }
 
     #[test]
@@ -72,13 +72,13 @@ mod tests_account_repository {
         // AND an account is added in the repository.
         let mut account_repository = InMemoryAccountRepository::new();
         let mut account = get_random_account();
-        let new_id = account_repository.create(account.clone());
+        let new_id = account_repository.create(account.clone()).unwrap();
 
         // WHEN the account name is queried.
         let db_account = account_repository.find_by_id(new_id.clone()).unwrap();
 
         // GUARD any fields should be the same.
-        assert_accounts_equal(&account, db_account, false);
+        assert_accounts_equal(&account, &db_account, false);
 
         let new_name = get_random_string(20);
         account.set_name(new_name.clone());
@@ -94,7 +94,7 @@ mod tests_account_repository {
         let db_account = account_repository.find_by_id(new_id.clone()).unwrap();
 
         // THEN it should be the same as the one input
-        assert_accounts_equal(&account, db_account, false);
+        assert_accounts_equal(&account, &db_account, false);
 
         // AND the name should match the new name
         assert_eq!(&new_name, db_account.name())

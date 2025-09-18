@@ -1,45 +1,19 @@
+use dotenvy::dotenv;
+
 mod app;
 mod infrastructure;
 mod interfaces;
 mod shared;
 
-use crate::app::entities::account::{Account, AccountType};
-use crate::app::entities::transaction::{
-    AccountRef, Transaction, TransactionStatus, TransactionType,
-};
-use crate::app::repositories::account_repository::AccountRepository;
-use crate::app::typing::currency::Currency;
-use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
+use interfaces::api::server::start_server;
 
-fn main() {
-    // Let us create an account
-    let account = Account::new(
-        None,
-        String::from("In Hand"),
-        String::from("Savings"),
-        String::from("IN Hand Savings"),
-        AccountType::Savings,
-        Some(Currency::RWF),
-    );
+#[tokio::main]
+async fn main() {
+    dotenv().ok();
 
-    let mut in_memory_account_repository = InMemoryAccountRepository::new();
-    let account_id = in_memory_account_repository.create(account.clone());
+    // The address to listen on for HTTP requests.
+    let address = "127.0.0.1:8000";
 
-    let transaction = Transaction::new(
-        None,
-        AccountRef::Id(account_id),
-        TransactionType::Income,
-        10f32.try_into().unwrap(),
-        1f32.try_into().unwrap(),
-        Some(0f32.try_into().unwrap()),
-        Some(9f32.try_into().unwrap()),
-        Currency::USD,
-        TransactionStatus::RolledBack,
-        chrono::Utc::now(),
-        None,
-        None,
-        None,
-    );
-
-    print!("{:?}", transaction);
+    // Start the server with the address
+    start_server(address).await;
 }
