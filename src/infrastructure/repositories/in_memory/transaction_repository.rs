@@ -17,8 +17,8 @@ impl InMemoryTransactionRepository {
 }
 
 impl TransactionRepository for InMemoryTransactionRepository {
-    fn find_all(&self) -> &Vec<Transaction> {
-        &self.transactions
+    fn find_all(&self) -> Vec<Transaction> {
+        self.transactions.clone()
     }
 
     fn create(&mut self, mut transaction: Transaction) -> EntityId {

@@ -1,6 +1,9 @@
 use crate::app::entities::account::Account;
 use crate::app::entities::common::EntityId;
-use crate::app::repositories::account_repository::{AccountRepository, FindByIdAndUpdateError};
+use crate::app::repositories::account_repository::{
+    AccountRepository, CreateError, FindByIdAndUpdateError,
+};
+use std::error::Error;
 
 pub struct InMemoryAccountRepository {
     next_id: usize,
@@ -17,23 +20,23 @@ impl InMemoryAccountRepository {
 }
 
 impl AccountRepository for InMemoryAccountRepository {
-    fn find_all(&self) -> &Vec<Account> {
+    fn find_all(&self) -> Vec<Account> {
         // GET all accounts in the memory
-        &self.accounts
+        self.accounts.clone()
     }
 
-    fn find_by_id(&self, id: EntityId) -> Option<&Account> {
+    fn find_by_id(&self, id: EntityId) -> Option<Account> {
         // GET an account by an id in the memory
         let id: usize = id.0.parse().unwrap();
-        self.accounts.get(id)
+        self.accounts.get(id).cloned()
     }
 
-    fn create(&mut self, account: Account) -> EntityId {
+    fn create(&mut self, account: Account) -> Result<EntityId, CreateError> {
         // Add an account to the memory
         let id = self.next_id;
         self.accounts.push(account);
         self.next_id += 1;
-        EntityId(id.to_string())
+        Ok(EntityId(id.to_string()))
     }
 
     fn find_by_id_and_update(

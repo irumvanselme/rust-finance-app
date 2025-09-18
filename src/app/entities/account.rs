@@ -2,11 +2,59 @@ use crate::app::entities::common::EntityId;
 use crate::app::typing::amount::{Amount, MIN_AMOUNT};
 use crate::app::typing::currency::{Currency, DEFAULT_CURRENCY};
 
+#[derive(Debug)]
+pub enum ConversionError {
+    InvalidCurrency,
+}
+
 #[derive(Debug, PartialEq, Clone, Eq)]
 pub enum AccountType {
     Checking,
     Savings,
     Credit,
+}
+
+impl TryFrom<&str> for AccountType {
+    type Error = ConversionError;
+
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        convert_string_to_account_type(value)
+    }
+}
+
+impl TryFrom<String> for AccountType {
+    type Error = ConversionError;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        convert_string_to_account_type(&value)
+    }
+}
+
+impl Into<String> for &AccountType {
+    fn into(self) -> String {
+        let value = match self {
+            AccountType::Savings => "savings",
+            AccountType::Credit => "credit",
+            AccountType::Checking => "checking",
+        };
+
+        value.to_string()
+    }
+}
+
+impl AccountType {
+    pub fn to_string(&self) -> String {
+        self.into()
+    }
+}
+
+fn convert_string_to_account_type(value: &str) -> Result<AccountType, ConversionError> {
+    match value {
+        "checking" => Ok(AccountType::Checking),
+        "savings" => Ok(AccountType::Savings),
+        "credit" => Ok(AccountType::Credit),
+        _ => Err(ConversionError::InvalidCurrency),
+    }
 }
 
 #[derive(Debug, PartialEq, Clone)]

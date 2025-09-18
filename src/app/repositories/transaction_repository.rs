@@ -5,7 +5,7 @@ pub trait TransactionRepository {
     /**
     Get all transaction
     */
-    fn find_all(&self) -> &Vec<Transaction>;
+    fn find_all(&self) -> Vec<Transaction>;
 
     /**
     Add a new transaction

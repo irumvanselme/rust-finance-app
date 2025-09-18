@@ -1,9 +1,9 @@
 use crate::app::entities::common::EntityId;
 use crate::app::entities::common::EntityRef::{Id, Value};
 use crate::app::entities::transaction::{Transaction, TransactionType};
-use crate::app::repositories::account_repository::AccountRepository;
 use crate::app::repositories::transaction_repository::TransactionRepository;
 use crate::app::services::account_service::AccountService;
+use std::sync::{Arc, Mutex};
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -27,26 +27,35 @@ pub enum CreateError {
     InvalidAccountRef { account_id: Option<EntityId> },
 }
 
-pub struct TransactionService;
+pub struct TransactionService {
+    account_service: Arc<Mutex<AccountService>>,
+    transaction_repository: Arc<Mutex<dyn TransactionRepository>>,
+}
 
 impl TransactionService {
+    pub fn new(
+        account_service: Arc<Mutex<AccountService>>,
+        transaction_repository: Arc<Mutex<dyn TransactionRepository>>,
+    ) -> Self {
+        Self {
+            account_service,
+            transaction_repository,
+        }
+    }
+
     /// Retrieves all transactions stored in the repository.
     ///
     /// This method fetches all `Transaction` records managed by the repository
     ///
     /// # Returns
     /// * `&Vec<Transaction>` -- A reference to a vector containing all `Transaction` instances.
-    pub fn find_all<'a>(&self, repository: &'a dyn TransactionRepository) -> &'a Vec<Transaction> {
-        repository.find_all()
+    pub fn find_all<'a>(&self) -> Vec<Transaction> {
+        self.transaction_repository.lock().unwrap().find_all()
     }
 
-    pub fn create(
-        &mut self,
-        repository: &mut dyn TransactionRepository,
-        account_repository: &mut dyn AccountRepository,
-        account_service: &mut AccountService,
-        transaction: Transaction,
-    ) -> Result<EntityId, CreateError> {
+    pub fn create(&mut self, transaction: Transaction) -> Result<EntityId, CreateError> {
+        let mut _account_service = self.account_service.lock().unwrap();
+
         // 1. Validate that optional fields are not provided
 
         // 1.1 See if the provided id already exists and throw an error
@@ -76,7 +85,7 @@ impl TransactionService {
         };
 
         // 3. Verify that the account we have can be verified by the account service, otherwise it is an account that does not exist.
-        let account = match account_service.find_by_id_or_fail(account_repository, &account_id) {
+        let account = match _account_service.find_by_id_or_fail(&account_id) {
             Ok(account) => account.clone(),
             Err(_) => {
                 return Err(CreateError::InvalidAccountRef {
@@ -96,10 +105,10 @@ impl TransactionService {
             // Update the respective account with the new transaction
             let update_account_result = match transaction.transaction_type() {
                 TransactionType::Expense => {
-                    account_service.withdraw(account_repository, &account_id, transaction.amount())
+                    _account_service.withdraw(&account_id, transaction.amount())
                 }
                 TransactionType::Income => {
-                    account_service.deposit(account_repository, &account_id, transaction.amount())
+                    _account_service.deposit(&account_id, transaction.amount())
                 }
             };
 
@@ -120,7 +129,11 @@ impl TransactionService {
             savable_transaction.set_account(Value(new_account));
         }
 
-        Ok(repository.create(savable_transaction))
+        Ok(self
+            .transaction_repository
+            .lock()
+            .unwrap()
+            .create(savable_transaction))
     }
 
     pub fn find_by_id<'a>(

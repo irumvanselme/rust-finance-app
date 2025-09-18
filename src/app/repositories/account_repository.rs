@@ -1,23 +1,30 @@
 use crate::app::entities::account::Account;
 use crate::app::entities::common::EntityId;
+use thiserror::Error;
 
 #[derive(Debug, PartialEq)]
 pub enum FindByIdAndUpdateError {
     NotFound,
 }
 
+#[derive(Error, Debug)]
+pub enum CreateError {
+    #[error("Failed to create account")]
+    FailedToCreateAccount,
+}
+
 pub trait AccountRepository {
     /// Find all accounts.
-    fn find_all(&self) -> &Vec<Account>;
+    fn find_all(&self) -> Vec<Account>;
 
     /// Find an account by ID.
     /// Return None if not found
-    fn find_by_id(&self, id: EntityId) -> Option<&Account>;
+    fn find_by_id(&self, id: EntityId) -> Option<Account>;
 
     /**
     Add a new account
     */
-    fn create(&mut self, account: Account) -> EntityId;
+    fn create(&mut self, account: Account) -> Result<EntityId, CreateError>;
 
     /// Find an account by ID and update it.
     /// It will throw a FindByIdAndUpdateError::NotFound if the provided id doesn't have any corresponding document in the db.

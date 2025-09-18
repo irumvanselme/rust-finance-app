@@ -1,21 +1,37 @@
 #[cfg(test)]
+mod common {
+    use crate::app::services::account_service::AccountService;
+    use crate::app::services::transaction_service::TransactionService;
+    use crate::infrastructure::repositories::in_memory::account_repository::InMemoryAccountRepository;
+    use crate::infrastructure::repositories::in_memory::transaction_repository::InMemoryTransactionRepository;
+    use std::sync::{Arc, Mutex};
+
+    #[cfg(test)]
+    pub(crate) fn get_transaction_service() -> TransactionService {
+        let account_repository = Arc::new(Mutex::new(InMemoryAccountRepository::new()));
+        let account_service = Arc::new(Mutex::new(AccountService::new(account_repository)));
+        let transaction_repository = Arc::new(Mutex::new(InMemoryTransactionRepository::new()));
+        let transaction_service = TransactionService::new(account_service, transaction_repository);
+
+        transaction_service
+    }
+}
+
+#[cfg(test)]
 mod test_transaction_service_find_all {
     use crate::app::entities::common::EntityId;
     use crate::app::repositories::transaction_repository::TransactionRepository;
-    use crate::app::services::transaction_service::TransactionService;
     use crate::infrastructure::repositories::in_memory::transaction_repository::InMemoryTransactionRepository;
     use crate::shared::test_utilities::get_random_transaction;
 
     #[test]
     fn test_find_all_success() {
         // GIVEN an in memory transaction repository
-        let transaction_repository = InMemoryTransactionRepository::new();
-
         // AND a transaction service
-        let transaction_service = TransactionService;
+        let transaction_service = super::common::get_transaction_service();
 
         // WHEN we find all transactions
-        let transactions = transaction_service.find_all(&transaction_repository);
+        let transactions = transaction_service.find_all();
 
         // THEN the account list is empty
         assert_eq!(transactions.len(), 0);
@@ -41,10 +57,10 @@ mod test_transaction_service_find_all {
             counter += 1;
         }
         // AND a transaction service
-        let transaction_service = TransactionService;
+        let transaction_service = super::common::get_transaction_service();
 
         // WHEN we find all transactions
-        let transactions = transaction_service.find_all(&transaction_repository);
+        let transactions = transaction_service.find_all();
 
         // THEN the account list is empty
         assert_eq!(transactions.len(), transactions.len());
@@ -77,7 +93,7 @@ mod test_transaction_service_find_by_id {
         let id = transaction_repository.create(transaction.clone());
 
         // AND a transaction service
-        let transaction_service = TransactionService;
+        let transaction_service = super::common::get_transaction_service();
 
         // WHEN querying by id
         let actual_transaction = transaction_service.find_by_id(&transaction_repository, id);
@@ -95,7 +111,7 @@ mod test_transaction_service_find_by_id {
         let transaction_repository = InMemoryTransactionRepository::new();
 
         // AND a transaction service
-        let transaction_service = TransactionService;
+        let transaction_service = super::common::get_transaction_service();
 
         // WHEN we find all transactions by a random entity id
         let random_entity_id = "1".into();
@@ -123,7 +139,7 @@ mod test_transaction_service_find_by_id_or_fail {
         let id = transaction_repository.create(transaction.clone());
 
         // AND a transaction service
-        let transaction_service = TransactionService;
+        let transaction_service = super::common::get_transaction_service();
 
         // WHEN querying by id
         let actual_transaction =
@@ -142,7 +158,7 @@ mod test_transaction_service_find_by_id_or_fail {
         let transaction_repository = InMemoryTransactionRepository::new();
 
         // AND a transaction service
-        let transaction_service = TransactionService;
+        let transaction_service = super::common::get_transaction_service();
 
         // WHEN we find all transactions by a random entity id
         let random_entity_id = "1".into();
