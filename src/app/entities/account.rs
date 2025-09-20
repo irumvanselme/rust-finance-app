@@ -2,13 +2,14 @@ use crate::app::entities::common::EntityId;
 use crate::app::typing::amount::{Amount, MIN_AMOUNT};
 use crate::app::typing::currency::{Currency, DEFAULT_CURRENCY};
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
 #[derive(Debug)]
 pub enum ConversionError {
     InvalidCurrency,
 }
 
-#[derive(Debug, PartialEq, Clone, Eq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Eq, Serialize, Deserialize, ToSchema)]
 pub enum AccountType {
     Checking,
     Savings,
@@ -58,7 +59,7 @@ fn convert_string_to_account_type(value: &str) -> Result<AccountType, Conversion
     }
 }
 
-#[derive(Debug, PartialEq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Clone, Serialize, ToSchema)]
 pub struct Account {
     id: Option<EntityId>,
 

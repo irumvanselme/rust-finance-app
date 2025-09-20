@@ -1,19 +1,40 @@
 use crate::app::entities::account::{Account, AccountType};
-use crate::app::typing::currency::Currency;
 use crate::app::entities::common::EntityId;
+use crate::app::typing::currency::Currency;
 use crate::interfaces::api::state::AppState;
 use actix_web::{get, post, web, HttpResponse, Responder};
 use serde::Deserialize;
+use utoipa;
+use utoipa::ToSchema;
+use utoipa_actix_web::service_config::ServiceConfig;
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 struct CreateAccountRequest {
+    /// Account name.
     name: String,
+
+    /// Account description.
     description: String,
+
+    /// Account platform.
     platform: String,
+
+    /// Account type.
     account_type: AccountType,
+
+    /// Account currency.
     currency: Currency,
 }
 
+const ACCOUNTS: &str = "Accounts";
+
+/// Get all accounts.
+#[utoipa::path(
+    tag = ACCOUNTS,
+    responses(
+        (status = 200, description = "List current accounts items", body=[Account])
+    )
+)]
 #[get("")]
 async fn get_all_accounts(state: web::Data<AppState>) -> impl Responder {
     let account_service = state.account_service.lock().unwrap();
@@ -21,7 +42,14 @@ async fn get_all_accounts(state: web::Data<AppState>) -> impl Responder {
     HttpResponse::Ok().json(accounts)
 }
 
-#[get("{id}")]
+/// Get account by id.
+#[utoipa::path(
+    tag = ACCOUNTS,
+    responses(
+        (status = 200, description = "List current accounts items", body=Account)
+    )
+)]
+#[get("/{id}")]
 async fn get_by_id(state: web::Data<AppState>, id: web::Path<String>) -> impl Responder {
     let account_service = state.account_service.lock().unwrap();
     let entity_id: EntityId = id.clone().into();
@@ -31,6 +59,13 @@ async fn get_by_id(state: web::Data<AppState>, id: web::Path<String>) -> impl Re
     }
 }
 
+/// Create account.
+#[utoipa::path(
+    tag = ACCOUNTS,
+    responses(
+        (status = 200, description = "List current accounts items")
+    )
+)]
 #[post("")]
 async fn create_account(
     state: web::Data<AppState>,
@@ -53,12 +88,9 @@ async fn create_account(
     }
 }
 
-
-pub(crate) fn accounts_routes(cfg: &mut web::ServiceConfig) {
-    cfg.service(
-        web::scope("/accounts")
-            .service(get_all_accounts)
-            .service(create_account)
-            .service(get_by_id)
-    );
+pub(super) fn configure(config: &mut ServiceConfig) -> () {
+    config
+        .service(get_all_accounts)
+        .service(get_by_id)
+        .service(create_account);
 }

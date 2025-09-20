@@ -1,8 +1,13 @@
 use serde::{Deserialize, Serialize};
+use utoipa::ToSchema;
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+/// Currency. (Currency used in balances and financial numbers)
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, ToSchema)]
 pub enum Currency {
+    /// Rwandan franc.
     RWF,
+
+    /// United States dollar.
     USD,
 }
 

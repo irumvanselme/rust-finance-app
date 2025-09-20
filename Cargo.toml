@@ -14,3 +14,8 @@ log = "0.4.27"
 dotenvy = "0.15"
 sqlite = { version = "0.37.0" }
 serde = { version = "1.0.219", features = ["derive"] }
+
+# Documentation generation (using utoipa and scalar)
+utoipa-scalar = {version = "0.3.0",  features = ["actix-web"]  }
+utoipa = { version = "5.4.0", features = ["actix_extras"] }
+utoipa-actix-web= { version = "0.1.2"}
