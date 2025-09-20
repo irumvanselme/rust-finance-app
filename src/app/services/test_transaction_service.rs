@@ -7,7 +7,8 @@ mod common {
     use std::sync::{Arc, Mutex};
 
     #[cfg(test)]
-    pub(crate) fn get_transaction_service() -> TransactionService {
+    pub(crate) fn get_transaction_service(
+    ) -> TransactionService<InMemoryTransactionRepository, InMemoryAccountRepository> {
         let account_repository = Arc::new(Mutex::new(InMemoryAccountRepository::new()));
         let account_service = Arc::new(Mutex::new(AccountService::new(account_repository)));
         let transaction_repository = Arc::new(Mutex::new(InMemoryTransactionRepository::new()));

@@ -13,3 +13,4 @@ env_logger = "0.11.8"
 log = "0.4.27"
 dotenvy = "0.15"
 sqlite = { version = "0.37.0" }
+serde = { version = "1.0.219", features = ["derive"] }

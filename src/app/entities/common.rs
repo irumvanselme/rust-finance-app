@@ -1,6 +1,7 @@
+use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
 
-#[derive(Debug, Default, PartialEq, Clone, Eq)]
+#[derive(Debug, Default, PartialEq, Clone, Eq, Serialize)]
 pub struct EntityId(pub(crate) String);
 
 impl From<String> for EntityId {

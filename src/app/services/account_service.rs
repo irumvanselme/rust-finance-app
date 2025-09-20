@@ -3,6 +3,7 @@ use crate::app::entities::common::EntityId;
 use crate::app::repositories::account_repository::{AccountRepository, FindByIdAndUpdateError};
 use crate::app::typing::amount::Amount;
 use std::sync::{Arc, Mutex};
+use log::info;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -26,12 +27,12 @@ pub enum UpdateError {
     InsufficientFunds,
 }
 
-pub struct AccountService {
-    account_repository: Arc<Mutex<dyn AccountRepository>>,
+pub struct AccountService<R> {
+    account_repository: Arc<Mutex<R>>,
 }
 
-impl AccountService {
-    pub fn new(account_repository: Arc<Mutex<dyn AccountRepository>>) -> Self {
+impl<R: AccountRepository> AccountService<R> {
+    pub fn new(account_repository: Arc<Mutex<R>>) -> Self {
         Self { account_repository }
     }
 
@@ -47,7 +48,7 @@ impl AccountService {
     pub fn create(&self, account: Account) -> Result<EntityId, CreateError> {
         // The request to create an account must not have an ID.
         // If it does, throw an error. It should be provided by the repository because.
-        // It is a unique identifier for the account. And the repository is responsible for generating it.
+        // It is a unique identifier for the account. And the repository that handles generating it.
         match account.id() {
             Some(_) => return Err(CreateError::EntityIdProvided),
             None => (),
@@ -101,8 +102,7 @@ impl AccountService {
         // Find the account to withdraw the amount it.
         // We are testing that the provided account_id to update has a corresponding account in the repository (data layer).
         // We are using the `?` Operator to unwrap the result. Which will return the same error if the account does not exist.
-        let mut account = self
-            .find_account_to_update(&account_id)?;
+        let mut account = self.find_account_to_update(&account_id)?;
 
         // Check if the account has enough funds to withdraw the requested amount.
         // If not, throw an InsufficientFunds error.
@@ -148,7 +148,9 @@ impl AccountService {
         Ok(self.find_by_id_or_fail(&entity_id).unwrap().clone())
     }
 
-    pub fn find_by_id<'a>(&self, id: EntityId) -> Option<Account> {
+    pub fn find_by_id(&self, id: EntityId) -> Option<Account> {
+        info!("Finding account by id: {:?}", id);
+
         self.account_repository.lock().unwrap().find_by_id(id)
     }
 
