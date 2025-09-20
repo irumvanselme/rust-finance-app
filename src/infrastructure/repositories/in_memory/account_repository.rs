@@ -3,7 +3,6 @@ use crate::app::entities::common::EntityId;
 use crate::app::repositories::account_repository::{
     AccountRepository, CreateError, FindByIdAndUpdateError,
 };
-use std::error::Error;
 
 pub struct InMemoryAccountRepository {
     next_id: usize,
@@ -34,7 +33,12 @@ impl AccountRepository for InMemoryAccountRepository {
     fn create(&mut self, account: Account) -> Result<EntityId, CreateError> {
         // Add an account to the memory
         let id = self.next_id;
-        self.accounts.push(account);
+        let entity_id = EntityId(id.to_string());
+
+        let mut new_account = account.clone();
+        new_account.set_id(Some(entity_id));
+
+        self.accounts.push(new_account);
         self.next_id += 1;
         Ok(EntityId(id.to_string()))
     }

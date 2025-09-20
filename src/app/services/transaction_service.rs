@@ -1,6 +1,7 @@
 use crate::app::entities::common::EntityId;
 use crate::app::entities::common::EntityRef::{Id, Value};
 use crate::app::entities::transaction::{Transaction, TransactionType};
+use crate::app::repositories::account_repository::AccountRepository;
 use crate::app::repositories::transaction_repository::TransactionRepository;
 use crate::app::services::account_service::AccountService;
 use std::sync::{Arc, Mutex};
@@ -27,15 +28,15 @@ pub enum CreateError {
     InvalidAccountRef { account_id: Option<EntityId> },
 }
 
-pub struct TransactionService {
-    account_service: Arc<Mutex<AccountService>>,
-    transaction_repository: Arc<Mutex<dyn TransactionRepository>>,
+pub struct TransactionService<R, AR> {
+    account_service: Arc<Mutex<AccountService<AR>>>,
+    transaction_repository: Arc<Mutex<R>>,
 }
 
-impl TransactionService {
+impl<R: TransactionRepository, AR: AccountRepository> TransactionService<R, AR> {
     pub fn new(
-        account_service: Arc<Mutex<AccountService>>,
-        transaction_repository: Arc<Mutex<dyn TransactionRepository>>,
+        account_service: Arc<Mutex<AccountService<AR>>>,
+        transaction_repository: Arc<Mutex<R>>,
     ) -> Self {
         Self {
             account_service,

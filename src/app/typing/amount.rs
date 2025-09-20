@@ -1,3 +1,4 @@
+use serde::{Deserialize, Serialize};
 use std::ops::Add;
 use std::ops::Sub;
 use thiserror::Error;
@@ -14,7 +15,7 @@ pub enum AmountError {
     MaxValue(f32),
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
 pub(crate) struct Amount(f32);
 
 impl Amount {
