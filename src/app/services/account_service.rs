@@ -2,8 +2,8 @@ use crate::app::entities::account::Account;
 use crate::app::entities::common::EntityId;
 use crate::app::repositories::account_repository::{AccountRepository, FindByIdAndUpdateError};
 use crate::app::typing::amount::Amount;
-use std::sync::{Arc, Mutex};
 use log::info;
+use std::sync::{Arc, Mutex};
 use thiserror::Error;
 
 #[derive(Error, Debug)]

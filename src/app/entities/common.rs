@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use std::fmt::Debug;
+use utoipa::ToSchema;
 
-#[derive(Debug, Default, PartialEq, Clone, Eq, Serialize)]
+#[derive(Debug, Default, PartialEq, Clone, Eq, Serialize, ToSchema)]
 pub struct EntityId(pub(crate) String);
 
 impl From<String> for EntityId {

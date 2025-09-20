@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::ops::Add;
 use std::ops::Sub;
 use thiserror::Error;
+use utoipa::ToSchema;
 
 pub(super) const _MAX_AMOUNT: f32 = 1000000.0;
 pub(super) const _MIN_AMOUNT: f32 = 0.0;
@@ -15,7 +16,7 @@ pub enum AmountError {
     MaxValue(f32),
 }
 
-#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, PartialOrd, Clone, Serialize, Deserialize, ToSchema)]
 pub(crate) struct Amount(f32);
 
 impl Amount {
