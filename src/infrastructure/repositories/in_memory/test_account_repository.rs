@@ -40,7 +40,7 @@ mod tests_account_repository {
 
         // AND the first item should be the same as the one input
         let first_account = accounts.get(0).unwrap();
-        assert_eq!(*first_account, account);
+        assert_accounts_equal(&first_account, &account, false);
     }
 
     #[test]
@@ -63,7 +63,7 @@ mod tests_account_repository {
         let created_account = account_repository.find_by_id(new_id);
 
         // THEN the result is the same as the one input
-        assert_eq!(&created_account.unwrap(), &account);
+        assert_accounts_equal(&created_account.unwrap(), &account, false);
     }
 
     #[test]
